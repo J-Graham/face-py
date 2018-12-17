@@ -2,7 +2,7 @@ import dlib # dlib for accurate face detection
 import cv2 # opencv
 import imutils # helper functions from pyimagesearch.com
 import logging
-import pyautogui
+import datetime
 
 # Grab video from your webcam
 stream = cv2.VideoCapture(0)
@@ -36,7 +36,7 @@ def draw_border(img, pt1, pt2, color, thickness, r, d):
     cv2.ellipse(img, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness)
 
 count = 0
-
+delay = 0
 while True:
     if count % 3 != 0:
         # read frames from live web cam stream
@@ -56,12 +56,13 @@ while True:
         # detect faces in the gray scale frame
         face_rects = detector(gray, 0)
         # loop over the face detections
-        count = 0
+
         if len(face_rects) > 0:
-          logging.warning('face found')
-          if count == 0:
-            count += 1
-            cv2.imwrite("./examples/in_memory_to_disk.png", frame)
+          delay += 1
+          if delay % 10 == 0:
+            logging.warning(delay)
+            #logging.warning('face found')
+            cv2.imwrite("./examples/" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ".png", frame)
 
         for i, d in enumerate(face_rects):
             x1, y1, x2, y2, w, h = d.left(), d.top(), d.right() + 1, d.bottom() + 1, d.width(), d.height()
